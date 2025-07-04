@@ -12,6 +12,9 @@ export interface UserProfile {
 }
 
 export const signUp = async (email: string, password: string) => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -20,6 +23,9 @@ export const signUp = async (email: string, password: string) => {
 }
 
 export const signIn = async (email: string, password: string) => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -28,16 +34,25 @@ export const signIn = async (email: string, password: string) => {
 }
 
 export const signOut = async () => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { error } = await supabase.auth.signOut()
   return { error }
 }
 
 export const getCurrentUser = async () => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { data: { user } } = await supabase.auth.getUser()
   return user
 }
 
 export const createUserProfile = async (profile: Partial<UserProfile>) => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { data, error } = await supabase
     .from('profiles')
     .insert([profile])
@@ -48,6 +63,9 @@ export const createUserProfile = async (profile: Partial<UserProfile>) => {
 }
 
 export const getUserProfile = async (userId: string) => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -58,6 +76,9 @@ export const getUserProfile = async (userId: string) => {
 }
 
 export const updateUserProfile = async (userId: string, updates: Partial<UserProfile>) => {
+  if (!supabase) {
+    throw new Error('Supabase client not initialized')
+  }
   const { data, error } = await supabase
     .from('profiles')
     .update(updates)

@@ -1,5 +1,4 @@
 'use client'
-export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -20,12 +19,17 @@ interface UserProfile {
 export default function DashboardPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  console.log(profile)
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
+        // Check if we're in the browser environment
+        if (typeof window === 'undefined') {
+          return
+        }
+
         const user = await getCurrentUser()
         if (!user) {
           router.push('/auth')
@@ -38,6 +42,11 @@ export default function DashboardPage() {
         }
       } catch (error) {
         console.error('Error loading profile:', error)
+        if (error instanceof Error && error.message === 'Supabase client not initialized') {
+          setError('Configuration error. Please check your environment variables.')
+        } else {
+          setError('Failed to load profile')
+        }
       } finally {
         setLoading(false)
       }
@@ -47,8 +56,15 @@ export default function DashboardPage() {
   }, [router])
 
   const handleSignOut = async () => {
-    await signOut()
-    router.push('/')
+    try {
+      await signOut()
+      router.push('/')
+    } catch (error) {
+      console.error('Error signing out:', error)
+      if (error instanceof Error && error.message === 'Supabase client not initialized') {
+        setError('Configuration error. Please check your environment variables.')
+      }
+    }
   }
 
   const skills = [
@@ -70,6 +86,19 @@ export default function DashboardPage() {
     )
   }
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen p-4 space-y-6">
       <div className="max-w-4xl mx-auto">
@@ -83,7 +112,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    Welcome back, {profile?.name}! 🌟
+                    Welcome back, {profile?.name || 'Learner'}! 🌟
                   </CardTitle>
                   <CardDescription className="text-gray-600">
                     Ready to continue your learning adventure?
@@ -127,7 +156,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg text-gray-800">View Progress</h3>
-                  <p className="text-gray-600 text-sm">See how you're growing</p>
+                  <p className="text-gray-600 text-sm">See how you&apos;re growing</p>
                 </div>
               </div>
             </CardContent>
@@ -142,7 +171,7 @@ export default function DashboardPage() {
               <span>Your XP Progress</span>
             </CardTitle>
             <CardDescription>
-              You're doing amazing! Keep learning to unlock new skills.
+              You&apos;re doing amazing! Keep learning to unlock new skills.
             </CardDescription>
           </CardHeader>
           <CardContent>
