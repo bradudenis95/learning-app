@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { signIn, signUp } from '@/lib/auth'
+import { getCurrentUser, getUserProfile, signIn, signUp } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -43,10 +43,16 @@ export default function AuthPage() {
         }
       } else {
         const { error } = await signIn(email, password)
+        const user = await getCurrentUser()
+        const { data } = await getUserProfile(user?.id as string)
         if (error) {
           setError(error.message)
         } else {
-          router.push('/dashboard')
+          if (data.role === 'child') {
+            router.push('/dashboard')
+          } else {
+            router.push('/parent')
+          }
         }
       }
     } catch (err) {

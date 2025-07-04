@@ -44,13 +44,13 @@ export default function ParentPage() {
           <div className="text-center">
             <Construction className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              We're Building Something Amazing!
+              We&apos;re Building Something Amazing!
             </h3>
             <p className="text-gray-600 mb-4">
-              The parent dashboard is currently in development. You'll soon be able to:
+              The parent dashboard is currently in development. You&apos;ll soon be able to:
             </p>
             <ul className="text-sm text-gray-600 space-y-2 text-left">
-              <li>• Monitor your child's learning progress</li>
+              <li>• Monitor your child&apos;s learning progress</li>
               <li>• View conversation insights with Astra</li>
               <li>• Set learning goals and preferences</li>
               <li>• Access detailed skill development reports</li>
@@ -58,15 +58,6 @@ export default function ParentPage() {
           </div>
           
           <div className="space-y-3">
-            <Button 
-              onClick={() => router.push('/dashboard')}
-              variant="outline"
-              className="w-full py-6 text-lg font-semibold border-2 border-purple-200 hover:bg-purple-50"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Home
-            </Button>
-            
             <Button 
               onClick={handleSignOut}
               className="w-full py-6 text-lg font-semibold gradient-bg hover:opacity-90 transition-opacity"
